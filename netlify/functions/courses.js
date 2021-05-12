@@ -88,6 +88,7 @@ exports.handler = async function(event) {
     let lecturer = lecturerQuery.data()
 
     // add the lecturer's name to the section's data
+    // 🔥🔥 PLEASE NOTE: MY ATTRIBUTE IS CALLED "lecturerName" SO I CHANGED THIS PIECE 🔥🔥
     sectionData.lecturer = lecturer.lecturerName
     // console.log(sectionData)
 
@@ -103,50 +104,46 @@ exports.handler = async function(event) {
     
     // get documents from the query
     let sectionReviews = reviewsQuery.docs
-    
-    // check if there are any reviews
-    if (sectionReviews.length > 0) {
-          
-      // set counter for section reviews
-      sectionObject.sectionReviewCount = 0
+                
+    // set counter for section reviews
+    sectionObject.sectionReviewCount = 0
 
-      // set counter for section ratings
-      let sectionTotalReviewRating = 0
+    // set counter for section ratings
+    let sectionTotalReviewRating = 0
 
-      // loop through the review documents
-      for (let reviewIndex = 0; reviewIndex < sectionReviews.length; reviewIndex++) {
-               
-        // get the data from the review
-        let reviewData = sectionReviews[reviewIndex].data()
+    // loop through the review documents
+    for (let reviewIndex = 0; reviewIndex < sectionReviews.length; reviewIndex++) {
+              
+      // get the data from the review
+      let reviewData = sectionReviews[reviewIndex].data()
 
-        // create review object that shows body and rating only
-        let reviewObject = {
-          body: reviewData.body,
-          rating: reviewData.rating
-        }
-
-        // add 1 to sectionReviewCount counter
-        sectionObject.sectionReviewCount = sectionObject.sectionReviewCount + 1
-
-        // add review rating to sectionTotalReviewRating
-        sectionTotalReviewRating = sectionTotalReviewRating + reviewData.rating
-        
-        // add review data to the section data
-        sectionObject.reviews.push(reviewObject)
+      // create review object that shows body and rating only
+      let reviewObject = {
+        body: reviewData.body,
+        rating: reviewData.rating
       }
 
-      // calculate section rating average
-      sectionObject.sectionAverageReviewRating = sectionTotalReviewRating / sectionObject.sectionReviewCount
-        
-      // add the section data to the courseData
-      courseData.sections.push(sectionObject)
+      // add 1 to sectionReviewCount counter
+      sectionObject.sectionReviewCount = sectionObject.sectionReviewCount + 1
 
-      // add the section review count to course review count
-      courseData.courseReviewCount = courseData.courseReviewCount + sectionObject.sectionReviewCount
+      // add review rating to sectionTotalReviewRating
+      sectionTotalReviewRating = sectionTotalReviewRating + reviewData.rating
+      
+      // add review data to the section data
+      sectionObject.reviews.push(reviewObject)
+    }
 
-      // add the section review rating total to course review rating total
-      courseTotalReviewRating = courseTotalReviewRating + sectionTotalReviewRating            
-    } 
+    // calculate section rating average
+    sectionObject.sectionAverageReviewRating = sectionTotalReviewRating / sectionObject.sectionReviewCount
+      
+    // add the section data to the courseData
+    courseData.sections.push(sectionObject)
+
+    // add the section review count to course review count
+    courseData.courseReviewCount = courseData.courseReviewCount + sectionObject.sectionReviewCount
+
+    // add the section review rating total to course review rating total
+    courseTotalReviewRating = courseTotalReviewRating + sectionTotalReviewRating  
 
   }
 
